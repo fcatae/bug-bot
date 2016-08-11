@@ -16,9 +16,6 @@ namespace BugBot.Controllers
 
         public MessagesController(IOptions<BotFrameworkCredentials> options)
         {
-            if (options == null || options.Value == null)
-                throw new ArgumentNullException();
-
             if (options.Value.MicrosoftAppId == null || options.Value.MicrosoftAppPassword == null)
                 throw new InvalidSecretsException("BotFrameworkCredentials");
 
