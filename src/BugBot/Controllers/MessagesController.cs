@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Bot.Connector;
 
 namespace BugBot.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class MessagesController : Controller
     {
         // GET api/values
         [HttpGet]
@@ -25,20 +26,16 @@ namespace BugBot.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody] Activity activity)
         {
-        }
+            if(activity.GetActivityType() == ActivityTypes.Message)
+            {
+                var client = new ConnectorClient(new Uri(activity.ServiceUrl));
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+                var reply = activity.CreateReply("I am here");
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                client.Conversations.ReplyToActivity(reply);
+            }
         }
     }
 }
