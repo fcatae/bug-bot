@@ -13,13 +13,15 @@ namespace BugBot.Controllers
     public class MessagesController : Controller
     {
         MicrosoftAppCredentials _botCredentials;
+        IDataActivity _dataActivity;
 
-        public MessagesController(IOptions<BotFrameworkCredentials> options)
+        public MessagesController(IOptions<BotFrameworkCredentials> options, IDataActivity dataActivity)
         {
             if (options.Value.MicrosoftAppId == null || options.Value.MicrosoftAppPassword == null)
                 throw new InvalidSecretsException("BotFrameworkCredentials");
 
             this._botCredentials = new MicrosoftAppCredentials(options.Value.MicrosoftAppId, options.Value.MicrosoftAppPassword);
+            this._dataActivity = dataActivity;
         }
 
         // GET api/values
@@ -43,6 +45,11 @@ namespace BugBot.Controllers
             if(activity.GetActivityType() == ActivityTypes.Message)
             {
                 var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
+
+                string user = activity.From.Id;
+                string message = activity.Text;
+
+                _dataActivity.Add(user, message);
 
                 var reply = activity.CreateReply("I am here");
 

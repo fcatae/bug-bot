@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -19,6 +20,12 @@ namespace BugBot
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if( env.IsDevelopment() )
+            {
+                builder.AddUserSecrets();
+            }
+
             Configuration = builder.Build();
         }
 
@@ -31,6 +38,10 @@ namespace BugBot
             services.AddOptions();
 
             services.Configure<BotFrameworkCredentials>(Configuration.GetSection("BotFramework"));
+
+            string configConnectionString = Configuration["Data:ConnectionString"];
+
+            services.AddSingleton<IDataActivity>(new DataActivity(configConnectionString));
 
             // Add framework services.
             services.AddMvc();
