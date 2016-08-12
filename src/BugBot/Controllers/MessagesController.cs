@@ -50,7 +50,7 @@ namespace BugBot.Controllers
                 string message = activity.Text;
                 string name = activity.From.Name;
 
-                _dataActivity.Add($"[{name}] id", message);
+                _dataActivity.Add($"[{name}] {user}", message);
 
                 var reply = activity.CreateReply("I am here");
 
