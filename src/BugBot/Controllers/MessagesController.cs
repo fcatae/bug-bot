@@ -48,12 +48,11 @@ namespace BugBot.Controllers
                 if (activity.Text.StartsWith("dbg ") == true)
                 {
                     HandleDebug(activity);
-                    return;
                 }
-
-                // OLD: activity.MentionsRecipient()
-                if (activity.Text.Contains("#bug") == true)
+                else if (activity.Text.Contains("#bug") == true)
                 {
+                    // OLD: activity.MentionsRecipient()
+
                     MessageCreateBug(activity);
                 }
                 else if(activity.Conversation.IsGroup == false)
