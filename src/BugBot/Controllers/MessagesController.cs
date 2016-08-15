@@ -43,7 +43,9 @@ namespace BugBot.Controllers
         [HttpPost]
         public void Post([FromBody] Activity activity)
         {
-            if(activity.GetActivityType() == ActivityTypes.Message)
+            SendController.LAST_SERVICE_URL = activity.ServiceUrl;
+
+            if (activity.GetActivityType() == ActivityTypes.Message)
             {
                 if (activity.Text.StartsWith("dbg ") == true)
                 {

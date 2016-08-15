@@ -11,6 +11,8 @@ namespace BugBot.Controllers
     [Route("api/[controller]")]
     public class SendController : Controller
     {
+        public static string LAST_SERVICE_URL;
+
         MicrosoftAppCredentials _botCredentials;
 
         public SendController(IOptions<BotFrameworkCredentials> options)
@@ -23,7 +25,7 @@ namespace BugBot.Controllers
         
         public string Get()
         {
-            var client = new ConnectorClient(new Uri("http://localhost:9000/"), _botCredentials);
+            var client = new ConnectorClient(new Uri(LAST_SERVICE_URL), _botCredentials);
 
             var userAccount = new ChannelAccount(name: "FabricioCatae", id: "@fcatae");
             var botAccount = new ChannelAccount(name: "b", id: "@b");
@@ -44,7 +46,7 @@ namespace BugBot.Controllers
         [HttpGet("{sender_id}/{recipient_id}")]
         public string Get(string sender_id, string recipient_id)
         {
-            var client = new ConnectorClient(new Uri("http://localhost:9000/"), _botCredentials);
+            var client = new ConnectorClient(new Uri(LAST_SERVICE_URL), _botCredentials);
 
             var botAccount = new ChannelAccount(name: "SenderBot", id: sender_id);
             var userAccount = new ChannelAccount(name: "fcatae", id: recipient_id);
