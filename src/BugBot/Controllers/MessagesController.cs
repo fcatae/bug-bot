@@ -44,7 +44,8 @@ namespace BugBot.Controllers
         {
             if(activity.GetActivityType() == ActivityTypes.Message)
             {
-                if (activity.MentionsRecipient() || activity.Text.Contains("#bug") == true)
+                // OLD: activity.MentionsRecipient()
+                if (activity.Text.Contains("#bug") == true)
                 {
                     MessageCreateBug(activity);
                 }
