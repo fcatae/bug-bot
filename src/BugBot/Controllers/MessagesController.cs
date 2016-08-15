@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Connector;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace BugBot.Controllers
 {
@@ -44,6 +45,11 @@ namespace BugBot.Controllers
         {
             if(activity.GetActivityType() == ActivityTypes.Message)
             {
+                if (activity.Text.StartsWith("debug") == true)
+                {
+                    Console.WriteLine(JsonConvert.SerializeObject(activity));
+                }
+
                 // OLD: activity.MentionsRecipient()
                 if (activity.Text.Contains("#bug") == true)
                 {
