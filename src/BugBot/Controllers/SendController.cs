@@ -41,13 +41,13 @@ namespace BugBot.Controllers
             return "OK!";
         }
 
-        [HttpGet("{recipient_id}")]
-        public string Get(string recipient_id)
+        [HttpGet("{sender_id}/{recipient_id}")]
+        public string Get(string sender_id, string recipient_id)
         {
             var client = new ConnectorClient(new Uri("http://localhost:9000/"), _botCredentials);
 
-            var userAccount = new ChannelAccount(name: "FabricioCatae", id: "@fcatae");
-            var botAccount = new ChannelAccount(name: "b", id: "@b");
+            var botAccount = new ChannelAccount(name: "SenderBot", id: sender_id);
+            var userAccount = new ChannelAccount(name: "fcatae", id: recipient_id);
 
             var conversationId = client.Conversations.CreateDirectConversation(botAccount, userAccount);
 
