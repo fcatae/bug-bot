@@ -43,13 +43,32 @@ namespace BugBot.Controllers
             return "OK!";
         }
 
+        [HttpGet("{sender_id}/{recipient_id}/{conversation_id}")]
+        public string Get(string sender_id, string recipient_id, string conversation_id)
+        {
+            var client = new ConnectorClient(new Uri(LAST_SERVICE_URL), _botCredentials);
+
+            var botAccount = new ChannelAccount(name: "SenderBot", id: sender_id);
+            var userAccount = new ChannelAccount(name: "User", id: recipient_id);            
+
+            IMessageActivity message = Activity.CreateMessageActivity();
+            message.From = botAccount;
+            message.Recipient = userAccount;
+            message.Conversation = new ConversationAccount(id: conversation_id);
+            message.Text = "Hello Conversation";
+
+            client.Conversations.SendToConversation((Activity)message);
+
+            return "OK";
+        }
+
         [HttpGet("{sender_id}/{recipient_id}")]
         public string Get(string sender_id, string recipient_id)
         {
             var client = new ConnectorClient(new Uri(LAST_SERVICE_URL), _botCredentials);
 
             var botAccount = new ChannelAccount(name: "SenderBot", id: sender_id);
-            var userAccount = new ChannelAccount(name: "fcatae", id: recipient_id);
+            var userAccount = new ChannelAccount(name: "User", id: recipient_id);
 
             var conversationId = client.Conversations.CreateDirectConversation(botAccount, userAccount);
 
