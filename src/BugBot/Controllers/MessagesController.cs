@@ -44,18 +44,38 @@ namespace BugBot.Controllers
         {
             if(activity.GetActivityType() == ActivityTypes.Message)
             {
-                var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
-
-                string user = activity.From.Id;
-                string message = activity.Text;
-                string name = activity.From.Name;
-
-                _dataActivity.Add($"[{name}] {user}", message);
-
-                var reply = activity.CreateReply("I am here");
-
-                client.Conversations.ReplyToActivity(reply);
+                if (activity.MentionsRecipient() || activity.Text.Contains("#bug") == true)
+                {
+                    MessageCreateBug(activity);
+                }
+                else if(activity.Conversation.IsGroup == false)
+                {
+                    MessageIamReady(activity);
+                }
             }
+        }
+
+        void MessageIamReady(Activity activity)
+        {
+            var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
+            var reply = activity.CreateReply($"I am ready");
+            client.Conversations.ReplyToActivity(reply);
+        }
+
+        void MessageCreateBug(Activity activity)
+        {
+            var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
+            int messageId;
+
+            string user = activity.From.Id;
+            string message = activity.Text;
+            string name = activity.From.Name;
+
+            messageId = _dataActivity.Add($"[{name}] {user}", message);
+
+            var reply = activity.CreateReply($"Created bug #{messageId} in the database");
+
+            client.Conversations.ReplyToActivity(reply);
         }
     }
 }

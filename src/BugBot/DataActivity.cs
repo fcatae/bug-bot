@@ -8,7 +8,7 @@ namespace BugBot
 {
     public interface IDataActivity
     {
-        void Add(string user, string message);
+        int Add(string user, string message);
     }
 
     public class DataActivity : IDataActivity
@@ -20,19 +20,26 @@ namespace BugBot
             _connectionString = connectionString;
         }
 
-        public void Add(string user, string message)
+        public int Add(string user, string message)
         {
+            int messageId;
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                SqlCommand command = new SqlCommand("INSERT tbMessages([from], [message]) VALUES (@from, @message)", connection);
+                SqlCommand command = new SqlCommand("prAddMessage", connection);
 
+                command.CommandType = System.Data.CommandType.StoredProcedure;
                 command.Parameters.Add(new SqlParameter("@from", user));
                 command.Parameters.Add(new SqlParameter("@message", message));
 
                 connection.Open();
 
-                command.ExecuteNonQuery();
+                object result = command.ExecuteScalar();
+                
+                messageId = Convert.ToInt32(result);
             }
+
+            return messageId;
         }
     }
 }
