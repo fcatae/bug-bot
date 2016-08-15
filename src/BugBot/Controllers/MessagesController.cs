@@ -45,9 +45,10 @@ namespace BugBot.Controllers
         {
             if(activity.GetActivityType() == ActivityTypes.Message)
             {
-                if (activity.Text.StartsWith("debug") == true)
+                if (activity.Text.StartsWith("dbg ") == true)
                 {
-                    Console.WriteLine(JsonConvert.SerializeObject(activity));
+                    HandleDebug(activity);
+                    return;
                 }
 
                 // OLD: activity.MentionsRecipient()
@@ -61,6 +62,35 @@ namespace BugBot.Controllers
                 }
             }
         }
+
+        void Reply(Activity activity, string message)
+        {
+            var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
+            var reply = activity.CreateReply(message);
+            client.Conversations.ReplyToActivity(reply);
+        }
+
+        void HandleDebug(Activity activity)
+        {
+            string input = activity.Text;
+
+            if (input.Contains("show"))
+            {
+                Reply(activity, JsonConvert.SerializeObject(activity));
+            }
+
+            if (input.Contains("whoami"))
+            {                
+                Reply(activity, JsonConvert.SerializeObject(new {
+                    serviceUrl = activity.ServiceUrl,
+                    botAccount = activity.Recipient.Name,
+                    botAccountId = activity.Recipient.Id
+                }
+                ));
+            }
+            
+        }
+
 
         void MessageIamReady(Activity activity)
         {
