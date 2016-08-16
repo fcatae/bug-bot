@@ -41,6 +41,16 @@ namespace BugBot.Controllers
             return "OK";
         }
 
+        [HttpPut("{event_name}", Order = -1)]
+        public string Put(string event_name)
+        {
+            EventModel eventData = _eventActivity.Get(event_name);
+
+            SendMessage(eventData, null);
+
+            return "OK";
+        }
+
         [HttpGet("{event_name}", Order = -1)]
         public string Get(string event_name)
         {
@@ -62,7 +72,7 @@ namespace BugBot.Controllers
 
             var botAccount = new ChannelAccount(name: "BotAccount", id: eventData.botAccount);
 
-            string messageText = FormatString(eventData.messageTemplate, messageData);
+            string messageText = (messageData != null) ? FormatString(eventData.messageTemplate, messageData) : eventData.messageTemplate;
 
             IMessageActivity message = Activity.CreateMessageActivity();
             message.From = botAccount;
