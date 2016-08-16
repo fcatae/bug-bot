@@ -30,26 +30,15 @@ namespace BugBot.Controllers
 
             return eventList;
         }
-
-        [HttpPost("test", Order = -1)]
-        public object Webhook() 
-        {
-            var st = HttpContext.Request.Body;
-            // JsonConvert.DeserializeObject(body);
-
-            // Console.WriteLine(body);
-
-            return new { a = new string[] { "1", "2" } };
-        }
-
+        
         [HttpPost("webhook", Order = -1)]
-        public object Webhook([FromBody] object body)
+        public object Webhook([FromBody] dynamic body)
         {
-            // JsonConvert.DeserializeObject(body);
+            var text = JsonConvert.DeserializeObject(body);
 
-            // Console.WriteLine(body);
+            Console.WriteLine(text);
 
-            return new { a = new string[] { "1", "2" } };
+            return body;
         }
 
         [HttpGet("ev={event_name}")]
