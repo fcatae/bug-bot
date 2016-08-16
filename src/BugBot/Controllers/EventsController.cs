@@ -32,7 +32,7 @@ namespace BugBot.Controllers
         }
 
         [HttpPost("test", Order = -1)]
-        public object Webhook()
+        public object Webhook() 
         {
             var st = HttpContext.Request.Body;
             // JsonConvert.DeserializeObject(body);
