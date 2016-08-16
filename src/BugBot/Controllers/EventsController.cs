@@ -42,8 +42,13 @@ namespace BugBot.Controllers
         {
             string text = JsonConvert.SerializeObject(body);
 
-            Console.WriteLine(text);
+            string aut = body.aut ?? "unknown";
+            string author = body.author ?? "unknown";
 
+            Console.WriteLine(text);
+            Console.WriteLine($"aut = {aut}");
+            Console.WriteLine($"author = {author}");
+            
             return body;
         }
 
