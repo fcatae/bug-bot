@@ -30,7 +30,13 @@ namespace BugBot.Controllers
 
             return eventList;
         }
-        
+
+        [HttpPost("test", Order = -1)]
+        public object Webhook()
+        {
+            return new { a = 1 };
+        }
+
         [HttpPost("webhook", Order = -1)]
         public object Webhook([FromBody] dynamic body)
         {
