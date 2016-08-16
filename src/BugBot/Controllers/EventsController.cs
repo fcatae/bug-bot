@@ -30,7 +30,14 @@ namespace BugBot.Controllers
 
             return eventList;
         }
-        
+
+        [HttpGet]
+        public string Test([FromBody] string body)
+        {
+            // JsonConvert.DeserializeObject(body);
+            return body;
+        }
+
         [HttpPost]
         public string Webhook([FromBody] string body)
         {
