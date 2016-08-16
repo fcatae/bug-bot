@@ -45,7 +45,7 @@ namespace BugBot.Controllers
             return body;
         }
 
-        [HttpGet("{event_name}")]
+        [HttpGet("?event={event_name}")]
         public string Get(string event_name)
         {
             EventModel eventData = _eventActivity.Get(event_name);
