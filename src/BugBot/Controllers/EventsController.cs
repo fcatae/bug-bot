@@ -42,6 +42,8 @@ namespace BugBot.Controllers
         public string Webhook([FromBody] string body)
         {
             // JsonConvert.DeserializeObject(body);
+            Console.WriteLine(body);
+
             return body;
         }
 
