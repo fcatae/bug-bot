@@ -32,13 +32,21 @@ namespace BugBot.Controllers
         }
         
         [HttpPost("{event_name}", Order = -1)]
-        public string Webhook(string event_name, [FromBody] object obj)
+        public string Post(string event_name, [FromBody] object obj)
         {
             EventModel eventData = _eventActivity.Get(event_name);
 
             SendMessage(eventData, obj);
 
             return "OK";
+        }
+
+        [HttpGet("{event_name}", Order = -1)]
+        public string Get(string event_name)
+        {
+            EventModel eventData = _eventActivity.Get(event_name);
+
+            return $"(Channel: {eventData.serviceUrl}) Template=[{eventData.messageTemplate}]";
         }
 
         string FormatString(string template, object obj)
@@ -64,5 +72,6 @@ namespace BugBot.Controllers
 
             client.Conversations.SendToConversation((Activity)message);
         }
+        
     }
 }
