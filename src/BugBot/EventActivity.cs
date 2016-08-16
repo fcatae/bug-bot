@@ -9,6 +9,7 @@ namespace BugBot
     public interface IEventActivity
     {
         void Add(string eventName, string serviceUrl, string botAccount, string conversation, string messageTemplate);
+        EventModel Get(string eventName);
     }
 
     public class EventModel
@@ -49,26 +50,28 @@ namespace BugBot
 
         public EventModel Get(string eventName)
         {
-            EventModel eventData;
+            EventModel eventData = null;
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 SqlCommand command = new SqlCommand("prGetEvent", connection);
-                
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@eventName", eventName));
+
                 connection.Open();
 
                 using (var reader = command.ExecuteReader())
                 {
-                    reader.Read();
-
-                    eventData = new EventModel()
+                    if(reader.Read())
                     {
-                        serviceUrl = (string)reader["serviceUrl"],
-                        botAccount = (string)reader["botAccount"],
-                        conversation = (string)reader["conversation"],
-                        messageTemplate = (string)reader["messageTemplate"]
-                    };
-                    
+                        eventData = new EventModel()
+                        {
+                            serviceUrl = (string)reader["serviceUrl"],
+                            botAccount = (string)reader["botAccount"],
+                            conversation = (string)reader["conversationId"],
+                            messageTemplate = (string)reader["messageTemplate"]
+                        };
+                    }
                 }
             }
 

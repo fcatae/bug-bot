@@ -44,22 +44,27 @@ namespace BugBot.Controllers
             return "OK!";
         }
 
-        [HttpGet("{sender_id}/{recipient_id}/{conversation_id}")]
-        public string Get(string sender_id, string recipient_id, string conversation_id)
+        [HttpGet("{event_name}")]
+        public string Get(string event_name)
         {
-            //string serviceUrl = "";
-            //var client = new ConnectorClient(new Uri(serviceUrl), _botCredentials);
+            EventModel eventData = _eventActivity.Get(event_name);
 
-            //var botAccount = new ChannelAccount(name: "SenderBot", id: sender_id);
-            //var userAccount = new ChannelAccount(name: "User", id: recipient_id);            
+            if(eventData == null )
+            {
+                return "Not registered";
+            }
 
-            //IMessageActivity message = Activity.CreateMessageActivity();
-            //message.From = botAccount;
-            //message.Recipient = userAccount;
-            //message.Conversation = new ConversationAccount(id: conversation_id);
-            //message.Text = "Hello Conversation";
+            var client = new ConnectorClient(new Uri(eventData.serviceUrl), _botCredentials);
 
-            //client.Conversations.SendToConversation((Activity)message);
+            var botAccount = new ChannelAccount(name: "BotAccount", id: eventData.botAccount);
+
+            IMessageActivity message = Activity.CreateMessageActivity();
+            message.From = botAccount;
+            message.Recipient = botAccount;
+            message.Conversation = new ConversationAccount(id: eventData.conversation);
+            message.Text = eventData.messageTemplate;
+
+            client.Conversations.SendToConversation((Activity)message);
 
             return "OK";
         }
