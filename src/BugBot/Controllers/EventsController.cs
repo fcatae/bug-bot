@@ -23,7 +23,7 @@ namespace BugBot.Controllers
             this._botCredentials = new MicrosoftAppCredentials(options.Value.MicrosoftAppId, options.Value.MicrosoftAppPassword);
             this._eventActivity = eventActivity;
         }
-        
+
         public string[] Get()
         {
             string[] eventList = null; // _eventActivity.GetAll();            
@@ -39,12 +39,13 @@ namespace BugBot.Controllers
         }
 
         [HttpPost("webhook", Order = -1)]
-        public string Webhook([FromBody] string body)
+        public string Webhook([FromBody] object body)
         {
             // JsonConvert.DeserializeObject(body);
-            Console.WriteLine(body);
 
-            return body;
+            // Console.WriteLine(body);
+
+            return new { a = ["1","2"]};
         }
 
         [HttpGet("ev={event_name}")]
