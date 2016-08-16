@@ -31,7 +31,7 @@ namespace BugBot.Controllers
             return eventList;
         }
 
-        [HttpPost(Order = -1)]
+        [HttpGet(Order = -1)]
         public string Test([FromBody] string body)
         {
             // JsonConvert.DeserializeObject(body);
