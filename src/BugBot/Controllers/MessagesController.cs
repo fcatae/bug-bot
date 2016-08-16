@@ -94,16 +94,29 @@ namespace BugBot.Controllers
             
             if (input.Contains("subscribe"))
             {
-                string eventName = "general";
-                string template = "general template blablabla";
+                // dbg(1) subscribe(2) eventname(3) message(4)
+                var cmds = input.Split(new char[] { '\t', ' ' }, 4, StringSplitOptions.RemoveEmptyEntries);
 
-                _eventActivity.Add(
-                    eventName,
-                    activity.ServiceUrl,
-                    activity.Recipient.Id,
-                    activity.Conversation.Id,
-                    template
-                    );
+                if(cmds.Length == 4)
+                {
+                    string eventName = cmds[2];
+                    string template = cmds[3].Trim(new char[] { ' ', '\t', '"' });
+
+                    _eventActivity.Add(
+                        eventName,
+                        activity.ServiceUrl,
+                        activity.Recipient.Id,
+                        activity.Conversation.Id,
+                        template
+                        );
+
+                    Reply(activity, "Done");
+                }
+                else
+                {
+                    Reply(activity, "Wrong number of parameters");
+                }
+
             }
         }
 
