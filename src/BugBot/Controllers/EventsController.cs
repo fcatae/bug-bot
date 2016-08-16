@@ -38,17 +38,22 @@ namespace BugBot.Controllers
         }
 
         [HttpPost("webhook", Order = -1)]
-        public object Webhook([FromBody] dynamic body)
+        public object Webhook([FromBody] object obj)
         {
-            string text = JsonConvert.SerializeObject(body);
+            dynamic body = obj;
+
+            //string text = JsonConvert.SerializeObject(body);
+            //Console.WriteLine(text);
 
             string aut = body.aut ?? "unknown";
             string author = body.author ?? "unknown";
 
-            Console.WriteLine(text);
             Console.WriteLine($"aut = {aut}");
             Console.WriteLine($"author = {author}");
-            
+
+            string text = ((object)body).ToString("entao aut={aut} and author={author}");
+            Console.WriteLine(text);
+
             return body;
         }
 
