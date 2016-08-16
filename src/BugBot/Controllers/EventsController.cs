@@ -64,31 +64,5 @@ namespace BugBot.Controllers
 
             client.Conversations.SendToConversation((Activity)message);
         }
-
-        [HttpGet("ev={event_name}")]
-        public string Get(string event_name)
-        {
-            EventModel eventData = _eventActivity.Get(event_name);
-
-            if(eventData == null )
-            {
-                return "Not registered";
-            }
-
-            var client = new ConnectorClient(new Uri(eventData.serviceUrl), _botCredentials);
-
-            var botAccount = new ChannelAccount(name: "BotAccount", id: eventData.botAccount);
-
-            IMessageActivity message = Activity.CreateMessageActivity();
-            message.From = botAccount;
-            message.Recipient = botAccount;
-            message.Conversation = new ConversationAccount(id: eventData.conversation);
-            message.Text = eventData.messageTemplate;
-
-            client.Conversations.SendToConversation((Activity)message);
-
-            return "OK";
-        }
-        
     }
 }
