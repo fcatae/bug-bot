@@ -38,23 +38,51 @@ namespace BugBot.Controllers
         }
 
         [HttpPost("webhook", Order = -1)]
-        public object Webhook([FromBody] object obj)
+        public string Webhook([FromBody] object obj)
         {
-            dynamic body = obj;
+            //dynamic body = obj;
 
             //string text = JsonConvert.SerializeObject(body);
             //Console.WriteLine(text);
 
-            string aut = body.aut ?? "unknown";
-            string author = body.author ?? "unknown";
+            //string aut = body.aut ?? "unknown";
+            //string author = body.author ?? "unknown";
 
-            Console.WriteLine($"aut = {aut}");
-            Console.WriteLine($"author = {author}");
+            //Console.WriteLine($"aut = {aut}");
+            //Console.WriteLine($"author = {author}");
 
-            string text = ((object)body).ToString("entao aut={aut} and author={author}");
-            Console.WriteLine(text);
+            //string text = FormatString("entao aut={aut} and author={author}", (Newtonsoft.Json.Linq.JObject)obj);
+            //Console.WriteLine(text);
 
-            return body;
+            EventModel eventData = _eventActivity.Get("general");
+
+            SendMessage(eventData, obj);
+
+            return "OK";
+        }
+
+        string FormatString(string template, object obj)
+        {
+            Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)obj;
+
+            return jObject.ToString(template);
+        }
+
+        void SendMessage(EventModel eventData, object messageData)
+        {
+            var client = new ConnectorClient(new Uri(eventData.serviceUrl), _botCredentials);
+
+            var botAccount = new ChannelAccount(name: "BotAccount", id: eventData.botAccount);
+
+            string messageText = FormatString(eventData.messageTemplate, messageData);
+
+            IMessageActivity message = Activity.CreateMessageActivity();
+            message.From = botAccount;
+            message.Recipient = botAccount;
+            message.Conversation = new ConversationAccount(id: eventData.conversation);
+            message.Text = messageText;
+
+            client.Conversations.SendToConversation((Activity)message);
         }
 
         [HttpGet("ev={event_name}")]
