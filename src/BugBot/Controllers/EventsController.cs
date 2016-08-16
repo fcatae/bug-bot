@@ -40,7 +40,7 @@ namespace BugBot.Controllers
         [HttpPost("webhook", Order = -1)]
         public object Webhook([FromBody] dynamic body)
         {
-            var text = JsonConvert.DeserializeObject(body);
+            string text = JsonConvert.SerializeObject(body);
 
             Console.WriteLine(text);
 
