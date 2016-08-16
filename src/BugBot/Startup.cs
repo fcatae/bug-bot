@@ -42,6 +42,7 @@ namespace BugBot
             string configConnectionString = Configuration["Data:ConnectionString"];
 
             services.AddSingleton<IDataActivity>(new DataActivity(configConnectionString));
+            services.AddSingleton<IEventActivity>(new EventActivity(configConnectionString));
 
             // Add framework services.
             services.AddMvc();

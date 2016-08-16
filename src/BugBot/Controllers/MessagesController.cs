@@ -15,14 +15,16 @@ namespace BugBot.Controllers
     {
         MicrosoftAppCredentials _botCredentials;
         IDataActivity _dataActivity;
+        IEventActivity _eventActivity;
 
-        public MessagesController(IOptions<BotFrameworkCredentials> options, IDataActivity dataActivity)
+        public MessagesController(IOptions<BotFrameworkCredentials> options, IDataActivity dataActivity, IEventActivity eventActivity)
         {
             if (options.Value.MicrosoftAppId == null || options.Value.MicrosoftAppPassword == null)
                 throw new InvalidSecretsException("BotFrameworkCredentials");
 
             this._botCredentials = new MicrosoftAppCredentials(options.Value.MicrosoftAppId, options.Value.MicrosoftAppPassword);
             this._dataActivity = dataActivity;
+            this._eventActivity = eventActivity;
         }
 
         // GET api/values
@@ -90,6 +92,19 @@ namespace BugBot.Controllers
                 ));
             }
             
+            if (input.Contains("subscribe"))
+            {
+                string eventName = "general";
+                string template = "general template blablabla";
+
+                _eventActivity.Add(
+                    eventName,
+                    activity.ServiceUrl,
+                    activity.Recipient.Id,
+                    activity.Conversation.Id,
+                    template
+                    );
+            }
         }
 
 
