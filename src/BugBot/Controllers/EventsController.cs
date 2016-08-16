@@ -30,17 +30,11 @@ namespace BugBot.Controllers
 
             return eventList;
         }
-
-        [HttpPost("test", Order = -1)]
-        public object Webhook()
+        
+        [HttpPost("{event_name}", Order = -1)]
+        public string Webhook(string event_name, [FromBody] object obj)
         {
-            return new { a = 1 };
-        }
-
-        [HttpPost("webhook", Order = -1)]
-        public string Webhook([FromBody] object obj)
-        {
-            EventModel eventData = _eventActivity.Get("emulator");
+            EventModel eventData = _eventActivity.Get(event_name);
 
             SendMessage(eventData, obj);
 
