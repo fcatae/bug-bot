@@ -23,25 +23,17 @@ namespace BugBot.Controllers
             this._eventActivity = eventActivity;
         }
         
-        public string Get()
+        public string[] Get()
         {
-            //string serviceUrl = "";
-            //var client = new ConnectorClient(new Uri(serviceUrl), _botCredentials);
+            string[] eventList = null; // _eventActivity.GetAll();            
 
-            //var userAccount = new ChannelAccount(name: "FabricioCatae", id: "@fcatae");
-            //var botAccount = new ChannelAccount(name: "b", id: "@b");
-
-            //var conversationId = client.Conversations.CreateDirectConversation(botAccount, userAccount);
-
-            //IMessageActivity message = Activity.CreateMessageActivity();
-            //            message.From = botAccount;
-            //            message.Recipient = userAccount;
-            //            message.Conversation = new ConversationAccount(id: conversationId.Id);
-            //            message.Text = "Hello";
-
-            //client.Conversations.SendToConversation((Activity)message);
-            
-            return "OK!";
+            return eventList;
+        }
+        
+        [HttpPost]
+        public string Webhook([FromBody] string body)
+        {
+            return body;
         }
 
         [HttpGet("{event_name}")]
