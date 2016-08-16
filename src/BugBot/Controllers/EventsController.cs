@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Connector;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace BugBot.Controllers
 {
@@ -33,6 +34,7 @@ namespace BugBot.Controllers
         [HttpPost]
         public string Webhook([FromBody] string body)
         {
+            // JsonConvert.DeserializeObject(body);
             return body;
         }
 
