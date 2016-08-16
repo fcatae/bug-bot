@@ -40,21 +40,7 @@ namespace BugBot.Controllers
         [HttpPost("webhook", Order = -1)]
         public string Webhook([FromBody] object obj)
         {
-            //dynamic body = obj;
-
-            //string text = JsonConvert.SerializeObject(body);
-            //Console.WriteLine(text);
-
-            //string aut = body.aut ?? "unknown";
-            //string author = body.author ?? "unknown";
-
-            //Console.WriteLine($"aut = {aut}");
-            //Console.WriteLine($"author = {author}");
-
-            //string text = FormatString("entao aut={aut} and author={author}", (Newtonsoft.Json.Linq.JObject)obj);
-            //Console.WriteLine(text);
-
-            EventModel eventData = _eventActivity.Get("general");
+            EventModel eventData = _eventActivity.Get("emulator");
 
             SendMessage(eventData, obj);
 
