@@ -31,21 +31,21 @@ namespace BugBot.Controllers
             return eventList;
         }
 
-        [HttpGet]
+        [HttpPost(Order = -1)]
         public string Test([FromBody] string body)
         {
             // JsonConvert.DeserializeObject(body);
             return body;
         }
 
-        [HttpPost]
+        [HttpPost(Order = -1)]
         public string Webhook([FromBody] string body)
         {
             // JsonConvert.DeserializeObject(body);
             return body;
         }
 
-        [HttpGet("?event={event_name}")]
+        [HttpGet("{event_name}")]
         public string Get(string event_name)
         {
             EventModel eventData = _eventActivity.Get(event_name);
