@@ -1,18 +1,6 @@
-﻿function init(user,feedback,form,url) {
-    //var user = document.getElementById('user');
-    //var feedback = document.getElementById('feedback');
-
+﻿function init(user, feedback, form, url) {
     user.value = getUserId();
     form.action = url;
-
-    alert(user.value)
-}
-
-
-function submitForm(feedback, user) {
-    setUserId();
-
-    return true;
 }
 
 function getUserId() {
