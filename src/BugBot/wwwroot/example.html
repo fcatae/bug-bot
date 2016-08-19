@@ -6,9 +6,8 @@
 </head>
 <body>
     <style>
-        .main {
+        body {
             background-color: darkblue;
-            padding: 10px;
         }
         iframe {
             position: fixed;
@@ -19,11 +18,22 @@
             height: 20rem;
         }
     </style>
-    <button onclick="feedbackForm.src = 'template.html#userid'; feedbackForm.style.display = 'block'">Open</button>
-    <button onclick="feedbackForm.src = ''; feedbackForm.style.display='none'">Close</button>
+
+    <script>
+        function openForm() {
+            feedbackForm.src = 'template.html?user=fab&redirect=/ok.html';
+            feedbackForm.style.display = 'block'
+        }
+        function closeForm() {
+            feedbackForm.src = '';
+            feedbackForm.style.display = 'none';
+        }
+    </script>
+    <button onclick="openForm()">Open</button>
+    <button onclick="closeForm()">Close</button>
     
     <div class="main">
-        <iframe id="feedbackForm" src=""></iframe>
+        <iframe id="feedbackForm" src="" style="display: none"></iframe>
     </div>
 </body>
 </html>

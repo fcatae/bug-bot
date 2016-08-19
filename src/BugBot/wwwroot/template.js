@@ -1,6 +1,10 @@
 ﻿function init(user, feedback, form, url) {
-    user.value = getUserId();
-    form.action = url;
+
+    var parameters = document.location.search;
+
+    // user.value = getUserId();
+    form.action = url + parameters;
+
 }
 
 function getUserId() {

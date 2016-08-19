@@ -19,7 +19,7 @@
     "BugBot": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5000/api/messages",
+      "launchUrl": "http://localhost:5000/example.html",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
