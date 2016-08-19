@@ -20,6 +20,8 @@
     </style>
 
     <script>
+        var templateUrl = 'template.html?user=fab&redirect=/ok.html';
+
         function openForm() {
             feedbackForm.src = 'template.html?user=fab&redirect=/ok.html';
             feedbackForm.style.display = 'block'
@@ -28,12 +30,20 @@
             feedbackForm.src = '';
             feedbackForm.style.display = 'none';
         }
+        function checkForm(url) {
+            var isTemplate = url.indexOf(templateUrl) >= 0;
+            var isValidPage = url.startsWith('http');
+
+            if (isValidPage && (!isTemplate)) {
+                // closeForm();
+            }
+        }
     </script>
     <button onclick="openForm()">Open</button>
     <button onclick="closeForm()">Close</button>
     
     <div class="main">
-        <iframe id="feedbackForm" src="" style="display: none"></iframe>
+        <iframe id="feedbackForm" src="" style="display: none" onload="checkForm(this.contentWindow.location.toString())"></iframe>
     </div>
 </body>
 </html>

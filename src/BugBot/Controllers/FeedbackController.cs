@@ -18,6 +18,8 @@ namespace BugBot.Controllers
         [HttpPost("form")]
         public IActionResult Post([FromForm] string feedback, [FromQuery] string user, [FromQuery] string redirect)
         {
+            string txt = feedback;
+
             return Redirect(redirect);
         }
         
