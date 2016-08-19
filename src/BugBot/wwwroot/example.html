@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <style>
+        .main {
+            background-color: darkblue;
+            padding: 10px;
+        }
+        iframe {
+            position: fixed;
+            border: 1px solid black;
+            top: 0;
+            right: 0;
+            width: 40rem;
+            height: 20rem;
+        }
+    </style>
+    <button onclick="feedbackForm.src = 'template.html#userid'; feedbackForm.style.display = 'block'">Open</button>
+    <button onclick="feedbackForm.src = ''; feedbackForm.style.display='none'">Close</button>
+    
+    <div class="main">
+        <iframe id="feedbackForm" src=""></iframe>
+    </div>
+</body>
+</html>
