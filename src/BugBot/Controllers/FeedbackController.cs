@@ -11,14 +11,23 @@ namespace BugBot.Controllers
     [Route("api/[controller]")]
     public class FeedbackController : Controller
     {
-        public FeedbackController()
+        private IDataActivity _dataActivity;
+
+        public FeedbackController(IDataActivity dataActivity)
         {
+            this._dataActivity = dataActivity;
         }
         
         [HttpPost("form")]
         public IActionResult Post([FromForm] string feedback, [FromQuery] string user, [FromQuery] string redirect)
         {
-            string txt = feedback;
+            Console.WriteLine("FeedbackController::POST");
+            Console.WriteLine("FeedbackController::POST");
+            Console.WriteLine("FeedbackController::POST");
+            Console.WriteLine("FeedbackController::POST");
+            Console.WriteLine("FeedbackController::POST");
+
+            var messageId = _dataActivity.Add(user, feedback);
 
             return Redirect(redirect);
         }
