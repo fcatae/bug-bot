@@ -26,6 +26,16 @@ namespace BugBot.Controllers
             this._eventActivity = eventActivity;
         }
         
+        [HttpGet("teste")]
+        public void Teste()
+        {
+            dynamic objFeedback = new { user = "usr", feedback = "text" };
+            string  strFeedback = Newtonsoft.Json.JsonConvert.SerializeObject(objFeedback);
+            object jsonFeedback = Newtonsoft.Json.JsonConvert.DeserializeObject(strFeedback);
+
+            string s = FormatString("teste {user} ok", jsonFeedback);
+        }
+
         [HttpPost("form")]
         public IActionResult Post([FromForm] string feedback, [FromQuery] string user, [FromQuery] string redirect)
         {
@@ -35,8 +45,11 @@ namespace BugBot.Controllers
 
             if(eventData != null)
             {
-                dynamic obj = new { user = user, feedback = feedback };
-                SendMessage(eventData, obj);
+                dynamic objFeedback = new { user = user, feedback = feedback };
+                string strFeedback = Newtonsoft.Json.JsonConvert.SerializeObject(objFeedback);
+                object jsonFeedback = Newtonsoft.Json.JsonConvert.DeserializeObject(strFeedback);
+
+                SendMessage(eventData, jsonFeedback);
             }
 
             return Redirect(redirect);
