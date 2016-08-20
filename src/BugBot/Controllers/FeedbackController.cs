@@ -21,12 +21,6 @@ namespace BugBot.Controllers
         [HttpPost("form")]
         public IActionResult Post([FromForm] string feedback, [FromQuery] string user, [FromQuery] string redirect)
         {
-            Console.WriteLine("FeedbackController::POST");
-            Console.WriteLine("FeedbackController::POST");
-            Console.WriteLine("FeedbackController::POST");
-            Console.WriteLine("FeedbackController::POST");
-            Console.WriteLine("FeedbackController::POST");
-
             var messageId = _dataActivity.Add(user, feedback);
 
             return Redirect(redirect);
