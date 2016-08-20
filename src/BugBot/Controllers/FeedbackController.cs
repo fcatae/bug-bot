@@ -11,11 +11,17 @@ namespace BugBot.Controllers
     [Route("api/[controller]")]
     public class FeedbackController : Controller
     {
+        private MicrosoftAppCredentials _botCredentials;
         private IDataActivity _dataActivity;
         private IEventActivity _eventActivity;
 
-        public FeedbackController(IDataActivity dataActivity, IEventActivity eventActivity)
+        public FeedbackController(IOptions<BotFrameworkCredentials> options, IDataActivity dataActivity, IEventActivity eventActivity)
         {
+            if (options.Value.MicrosoftAppId == null || options.Value.MicrosoftAppPassword == null)
+                throw new InvalidSecretsException("BotFrameworkCredentials");
+
+            this._botCredentials = new MicrosoftAppCredentials(options.Value.MicrosoftAppId, options.Value.MicrosoftAppPassword);
+
             this._dataActivity = dataActivity;
             this._eventActivity = eventActivity;
         }
@@ -29,11 +35,37 @@ namespace BugBot.Controllers
 
             if(eventData != null)
             {
-
+                dynamic obj = new { user = user, feedback = feedback };
+                SendMessage(eventData, obj);
             }
 
             return Redirect(redirect);
         }
-        
+
+        // duplicated code
+        string FormatString(string template, object obj)
+        {
+            Newtonsoft.Json.Linq.JObject jObject = (Newtonsoft.Json.Linq.JObject)obj;
+
+            return jObject.ToString(template);
+        }
+
+        // duplicated code
+        void SendMessage(EventModel eventData, object messageData)
+        {
+            var client = new ConnectorClient(new Uri(eventData.serviceUrl), _botCredentials);
+
+            var botAccount = new ChannelAccount(name: "BotAccount", id: eventData.botAccount);
+
+            string messageText = (messageData != null) ? FormatString(eventData.messageTemplate, messageData) : eventData.messageTemplate;
+
+            IMessageActivity message = Activity.CreateMessageActivity();
+            message.From = botAccount;
+            message.Recipient = botAccount;
+            message.Conversation = new ConversationAccount(id: eventData.conversation);
+            message.Text = messageText;
+
+            client.Conversations.SendToConversation((Activity)message);
+        }
     }
 }
