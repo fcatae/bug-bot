@@ -12,16 +12,25 @@ namespace BugBot.Controllers
     public class FeedbackController : Controller
     {
         private IDataActivity _dataActivity;
+        private IEventActivity _eventActivity;
 
-        public FeedbackController(IDataActivity dataActivity)
+        public FeedbackController(IDataActivity dataActivity, IEventActivity eventActivity)
         {
             this._dataActivity = dataActivity;
+            this._eventActivity = eventActivity;
         }
         
         [HttpPost("form")]
         public IActionResult Post([FromForm] string feedback, [FromQuery] string user, [FromQuery] string redirect)
         {
             var messageId = _dataActivity.Add(user, feedback);
+
+            EventModel eventData = _eventActivity.Get("bugreport");
+
+            if(eventData != null)
+            {
+
+            }
 
             return Redirect(redirect);
         }
