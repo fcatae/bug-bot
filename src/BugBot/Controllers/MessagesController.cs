@@ -116,7 +116,21 @@ namespace BugBot.Controllers
                 {
                     Reply(activity, "Wrong number of parameters");
                 }
+            }
 
+            if (input.Contains("createbug"))
+            {
+                var cmds = input.Split(new char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                string account = cmds[2];
+                string project = cmds[3];
+                string password = cmds[4];
+
+                var vsClient = new VstsClient();
+
+                string link = vsClient.CreateBugAsync(account, project, password).Result;
+
+                Reply(activity, $"Created bug at {link}");
             }
         }
 
