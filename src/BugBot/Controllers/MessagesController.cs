@@ -33,6 +33,8 @@ namespace BugBot.Controllers
         {
             SendController.LAST_SERVICE_URL = activity.ServiceUrl;
 
+            CommandLine cmd = new CommandLine(activity.Text);
+
             if (activity.GetActivityType() == ActivityTypes.Message)
             {
                 if (activity.Text.StartsWith("dbg ") == true)
