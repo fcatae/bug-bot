@@ -122,11 +122,23 @@ namespace BugBot.Controllers
             {
                 var cmds = input.Split(new char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                string account = cmds[2];
-                string project = cmds[3];
-                string password = cmds[4];
+                VstsCredentials cred;
 
-                var cred = new VstsCredentials(account, project, password);
+                if (cmds.Length == 4)
+                {
+                    string account = cmds[2];
+                    string password = cmds[3];
+
+                    cred = new VstsCredentials(account, password);
+                }
+                else
+                {
+                    string account = cmds[2];
+                    string project = cmds[3];
+                    string password = cmds[4];
+
+                    cred = new VstsCredentials(account, project, password);
+                }
 
                 var vsClient = new VstsClient(cred);
 

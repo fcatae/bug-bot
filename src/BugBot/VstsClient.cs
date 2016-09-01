@@ -9,35 +9,6 @@ using Newtonsoft.Json;
 
 namespace BugBot
 {
-    public class VstsCredentials
-    {
-        public VstsCredentials(string account, string project, string password)
-        {
-            this._account = account;
-            this._project = project;
-            this._password = password;
-        }
-
-        string _account;
-        string _project;
-        string _password;
-
-        public string Url
-        {
-            get
-            {
-                return $"https://{_account}.visualstudio.com/{_project}/";
-            }
-        }
-        public string Secret
-        {
-            get
-            {
-                return Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _password)));
-            }
-        }
-    }
-
     public class VstsClient
     {
         VstsCredentials _credential;
@@ -53,12 +24,17 @@ namespace BugBot
             public string url;
         }
 
-        public async Task<string> CreateBugAsync()
+        public Task<string> CreateBugAsync()
+        {
+            return CreateBugAsync("New place", "<long description here>");
+        }
+
+        public async Task<string> CreateBugAsync(string title, string description)
         {
             var fields = new dynamic[]
             {
-                new { op = "add", path = "/fields/System.Title", value = "Dynamic Test" },
-                new { op = "add", path = "/fields/Microsoft.VSTS.TCM.ReproSteps", value = "Description blablablablabla" }
+                new { op = "add", path = "/fields/System.Title", value = title },
+                new { op = "add", path = "/fields/Microsoft.VSTS.TCM.ReproSteps", value = description }
                 // new { op = "add", path = "/fields/Microsoft.VSTS.Common.Priority", value = "2" };
             };
 
