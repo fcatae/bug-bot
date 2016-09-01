@@ -18,18 +18,18 @@ namespace BugBot
             this._credential = credential;
         }
 
-        class VstsBug
-        {
-            public int id;
-            public string url;
-        }
+        //class VstsBug
+        //{
+        //    public int id;
+        //    public string url;
+        //}
 
-        public Task<string> CreateBugAsync()
+        public Task<int> CreateBugAsync()
         {
             return CreateBugAsync("New place", "<long description here>");
         }
 
-        public async Task<string> CreateBugAsync(string title, string description)
+        public async Task<int> CreateBugAsync(string title, string description)
         {
             var fields = new dynamic[]
             {
@@ -59,9 +59,9 @@ namespace BugBot
                 response.EnsureSuccessStatusCode();
 
                 string data = await response.Content.ReadAsStringAsync();
-                var bug = JsonConvert.DeserializeObject<VstsBug>(data);
+                dynamic bug = JsonConvert.DeserializeObject(data);
 
-                return bug.url;
+                return bug.id;
             }
         }
 

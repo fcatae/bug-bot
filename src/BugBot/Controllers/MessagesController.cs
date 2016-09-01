@@ -118,7 +118,7 @@ namespace BugBot.Controllers
                 }
             }
 
-            if (input.Contains("createbug"))
+            if (input.Contains("createvsts"))
             {
                 var cmds = input.Split(new char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -140,14 +140,36 @@ namespace BugBot.Controllers
                     cred = new VstsCredentials(account, project, password);
                 }
 
+                StoreVSTSData(cred);
+
+                Reply(activity, "Cred Stored");
+            }
+
+            if (input.Contains("createbug"))
+            {
+                var cmds = input.Split(new char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                VstsCredentials cred = StoreVSTSData(null);                
+
                 var vsClient = new VstsClient(cred);
 
-                string link = vsClient.CreateBugAsync().Result;
+                int bugid = vsClient.CreateBugAsync(cmds[2], cmds[3]).Result;
+
+                string link = $"{cred.Url}_workitems?id={bugid}";
 
                 Reply(activity, $"Created bug at {link}");
             }
         }
 
+        static VstsCredentials _StoreVSTSDataObject;
+        VstsCredentials StoreVSTSData(VstsCredentials cred)
+        {
+            if(cred != null)
+            {
+                _StoreVSTSDataObject = cred;
+            }
+            return _StoreVSTSDataObject;
+        }
 
         void MessageIamReady(Activity activity)
         {
