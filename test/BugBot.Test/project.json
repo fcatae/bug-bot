@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "xunit": "2.1.0-rc2-build3176",
+    "dotnet-test-xunit": "1.0.0-rc2-build10025",
+    "BugBot": { "target": "project"}
+  },
+  "testRunner": "xunit",
+  "frameworks": {
+    "net46": {}
+  }
+}
