@@ -154,8 +154,7 @@ namespace BugBot.Controllers
                 var vsClient = new VstsClient(cred);
 
                 int bugid = vsClient.CreateBugAsync(cmds[2], cmds[3]).Result;
-
-                string link = $"{cred.Url}_workitems?id={bugid}";
+                string link = vsClient.GetLink(bugid);
 
                 Reply(activity, $"Created bug at {link}");
             }

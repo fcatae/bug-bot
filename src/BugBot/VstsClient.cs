@@ -24,9 +24,9 @@ namespace BugBot
         //    public string url;
         //}
 
-        public Task<int> CreateBugAsync()
+        public string GetLink(int workItemId)
         {
-            return CreateBugAsync("New place", "<long description here>");
+            return $"{_credential.Url}_workitems?id={workItemId}";
         }
 
         public async Task<int> CreateBugAsync(string title, string description)
