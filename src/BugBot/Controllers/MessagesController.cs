@@ -126,9 +126,11 @@ namespace BugBot.Controllers
                 string project = cmds[3];
                 string password = cmds[4];
 
-                var vsClient = new VstsClient();
+                var cred = new VstsCredentials(account, project, password);
 
-                string link = vsClient.CreateBugAsync(account, project, password).Result;
+                var vsClient = new VstsClient(cred);
+
+                string link = vsClient.CreateBugAsync().Result;
 
                 Reply(activity, $"Created bug at {link}");
             }
