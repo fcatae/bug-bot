@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.Bot.Connector;
+using BugBot.Controllers;
 
 namespace BugBot.Test
 {
-    public class TestController
+    public class TestMessageController
     {
-        public void TestPost()
+        MessagesController _controller;
+
+        public TestMessageController()
         {
             BotFrameworkCredentials credentials = new BotFrameworkCredentials()
             {
@@ -17,15 +20,12 @@ namespace BugBot.Test
                 MicrosoftAppPassword = "appsecret"
             };
 
-            var controller = new BugBot.Controllers.MessagesController(Options.Create(credentials), null, null);
+            this._controller = new MessagesController(Options.Create(credentials), null, null);
+        }
 
-            Activity activity = new Activity()
-            {
-                Type = "message",
-                Text = "/dbg a b c"
-            };
-
-            controller.Post(activity);
+        public void Post(TestActivity testActivity)
+        {
+            _controller.Post(testActivity.Activity);
         }
     }
 }

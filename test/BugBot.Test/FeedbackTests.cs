@@ -8,6 +8,10 @@ namespace BugBot.Test
     {
         public void ListFeedbacks()
         {
+            TestMessageController controller = new TestMessageController();
+            TestActivity activity = TestActivity.DebugCall("list");
+
+            controller.Post(activity);
         }
     }
 }
