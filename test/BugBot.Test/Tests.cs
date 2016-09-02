@@ -1,6 +1,8 @@
 ﻿using System;
 using BugBot;
 using Xunit;
+using Microsoft.Extensions.Options;
+using Microsoft.Bot.Connector;
 
 namespace Tests
 {
@@ -10,7 +12,27 @@ namespace Tests
         {
             var test = new Tests();
 
-            test.TestMultipleShortParameters();
+            test.TestPost();
+        }
+
+        public void TestPost()
+        {
+
+            BotFrameworkCredentials credentials = new BotFrameworkCredentials()
+            {
+                MicrosoftAppId = "appid",
+                MicrosoftAppPassword = "appsecret"
+            };
+
+            var controller = new BugBot.Controllers.MessagesController(Options.Create(credentials), null, null);
+
+            Activity activity = new Activity()
+            {
+                Type = "message",
+                Text = "/dbg a b c"
+            };
+
+            controller.Post(activity);
         }
 
         [Fact]

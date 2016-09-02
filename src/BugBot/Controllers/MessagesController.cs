@@ -36,8 +36,8 @@ namespace BugBot.Controllers
             CommandLine cmd = new CommandLine(activity.Text);
 
             if (activity.GetActivityType() == ActivityTypes.Message)
-            {
-                if (activity.Text.StartsWith("dbg ") == true)
+            {                
+                if (cmd.Command == "/dbg") // activity.Text.StartsWith("dbg ") == true
                 {
                     HandleDebug(activity);
                 }
@@ -65,12 +65,14 @@ namespace BugBot.Controllers
         {
             string input = activity.Text;
 
-            if (input.Contains("show"))
+            CommandLine cmd = new CommandLine(activity.Text);
+
+            if (cmd.GetValue(0) == "show")
             {
                 Reply(activity, JsonConvert.SerializeObject(activity));
             }
 
-            if (input.Contains("whoami"))
+            if (cmd.GetValue(0) == "whoami")
             {                
                 Reply(activity, JsonConvert.SerializeObject(new {
                     serviceUrl = activity.ServiceUrl,
@@ -79,8 +81,8 @@ namespace BugBot.Controllers
                 }
                 ));
             }
-            
-            if (input.Contains("subscribe"))
+
+            if (cmd.GetValue(0) == "subscribe")
             {
                 // dbg(1) subscribe(2) eventname(3) message(4)
                 var cmds = input.Split(new char[] { '\t', ' ' }, 4, StringSplitOptions.RemoveEmptyEntries);
@@ -106,8 +108,8 @@ namespace BugBot.Controllers
                 }
             }
 
-            if (input.Contains("createvsts"))
-            {
+            if (cmd.GetValue(0) == "createvsts")
+            { 
                 var cmds = input.Split(new char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 VstsCredentials cred;
@@ -133,7 +135,7 @@ namespace BugBot.Controllers
                 Reply(activity, "Cred Stored");
             }
 
-            if (input.Contains("createbug"))
+            if (cmd.GetValue(0) == "createbug")                
             {
                 var cmds = input.Split(new char[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
