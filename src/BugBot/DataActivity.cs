@@ -9,6 +9,13 @@ namespace BugBot
     public interface IDataActivity
     {
         int Add(string user, string message);
+        IEnumerable<DataModel> List();
+    }
+
+    public class DataModel
+    {
+        public string User;
+        public string Message;
     }
 
     public class DataActivity : IDataActivity
@@ -40,6 +47,27 @@ namespace BugBot
             }
 
             return messageId;
+        }
+
+        public IEnumerable<DataModel> List()
+        {
+            List<DataModel> data = new List<BugBot.DataModel>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand("select [from], message from tbMessages order by id", connection);
+
+                connection.Open();
+
+                var reader = command.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    data.Add(new DataModel() { User = (string)reader[0], Message = (string)reader[1] });
+                }
+            }
+
+            return data;
         }
     }
 }

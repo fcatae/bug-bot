@@ -148,6 +148,11 @@ namespace BugBot.Controllers
 
                 Reply(activity, $"Created bug at {link}");
             }
+
+            if (cmd.GetValue(0) == "list")
+            {
+                _dataActivity.List();
+            }
         }
 
         static VstsCredentials _StoreVSTSDataObject;
