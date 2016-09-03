@@ -14,15 +14,17 @@ namespace BugBot.Controllers
     public class MessagesController : Controller
     {
         MicrosoftAppCredentials _botCredentials;
+        private IBotService _botService;
         IDataActivity _dataActivity;
         IEventActivity _eventActivity;
 
-        public MessagesController(IOptions<BotFrameworkCredentials> options, IDataActivity dataActivity, IEventActivity eventActivity)
+        public MessagesController(IOptions<BotFrameworkCredentials> options, IBotService botService, IDataActivity dataActivity, IEventActivity eventActivity)
         {
             if (options.Value.MicrosoftAppId == null || options.Value.MicrosoftAppPassword == null)
                 throw new InvalidSecretsException("BotFrameworkCredentials");
 
             this._botCredentials = new MicrosoftAppCredentials(options.Value.MicrosoftAppId, options.Value.MicrosoftAppPassword);
+            this._botService = botService;
             this._dataActivity = dataActivity;
             this._eventActivity = eventActivity;
         }
@@ -33,39 +35,83 @@ namespace BugBot.Controllers
         {
             SendController.LAST_SERVICE_URL = activity.ServiceUrl;
 
-            CommandLine cmd = new CommandLine(activity.Text);
+            var message = _botService.TryCreate(activity);
+
+            if( message != null )
+            {
+                if( message.Text.StartsWith("/") )
+                {
+                    CommandLine cmdLine = new CommandLine(message.Text);
+
+                    string command = message.Text.Substring(1);
+
+                    switch (command)
+                    {
+                        case "ping":
+                            break;
+                        case "help":
+                            break;
+
+                        // Feedback
+                        case "list":
+                            break;
+                        case "ignore":
+                            break;
+                        case "promote":
+                            break;
+
+                        // Feedback v2
+                        case "notify":
+                            break;
+
+                        // Events
+                        case "event":
+                            break;
+
+                        // Security v2
+                        case "admin":
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    // commandline = new commandLine(args)
+                }
+            }
+
+            // Legacy
+
+            CommandLine cmd = new CommandLine(message.Text);
 
             if (activity.GetActivityType() == ActivityTypes.Message)
             {                
                 if (cmd.Command == "/dbg") // activity.Text.StartsWith("dbg ") == true
                 {
-                    HandleDebug(activity);
+                    HandleDebug(message, activity);
                 }
                 else if (activity.Text.Contains("#bug") == true)
                 {
-                    // OLD: activity.MentionsRecipient()
-
-                    MessageCreateBug(activity);
+                    MessageCreateBug(message);
                 }
                 else if(activity.Conversation.IsGroup == false)
                 {
-                    MessageIamReady(activity);
+                    MessageIamReady(message);
                 }
             }
         }
 
         void Reply(Activity activity, string message)
         {
-            var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
-            var reply = activity.CreateReply(message);
-            client.Conversations.ReplyToActivity(reply);
+            var bmessage = _botService.TryCreate(activity);
+            bmessage.Reply(message);
         }
 
-        void HandleDebug(Activity activity)
+        void HandleDebug(IBotMessage message, Activity activity)
         {
-            string input = activity.Text;
+            string input = message.Text;
 
-            CommandLine cmd = new CommandLine(activity.Text);
+            CommandLine cmd = new CommandLine(message.Text);
 
             if (cmd.GetValue(0) == "show")
             {
@@ -73,13 +119,15 @@ namespace BugBot.Controllers
             }
 
             if (cmd.GetValue(0) == "whoami")
-            {                
-                Reply(activity, JsonConvert.SerializeObject(new {
-                    serviceUrl = activity.ServiceUrl,
-                    botAccount = activity.Recipient.Name,
-                    botAccountId = activity.Recipient.Id
-                }
-                ));
+            {
+                message.Reply(message.Recipient);
+
+                //Reply(activity, JsonConvert.SerializeObject(new {
+                //    serviceUrl = activity.ServiceUrl,
+                //    botAccount = activity.Recipient.Name,
+                //    botAccountId = activity.Recipient.Id
+                //}
+                //));
             }
 
             if (cmd.GetValue(0) == "subscribe")
@@ -132,7 +180,7 @@ namespace BugBot.Controllers
 
                 StoreVSTSData(cred);
 
-                Reply(activity, "Cred Stored");
+                message.Reply("Cred Stored");
             }
 
             if (cmd.GetValue(0) == "createbug")                
@@ -146,7 +194,7 @@ namespace BugBot.Controllers
                 int bugid = vsClient.CreateBugAsync(cmds[2], cmds[3]).Result;
                 string link = vsClient.GetLink(bugid);
 
-                Reply(activity, $"Created bug at {link}");
+                message.Reply($"Created bug at {link}");
             }
 
             if (cmd.GetValue(0) == "list")
@@ -156,6 +204,7 @@ namespace BugBot.Controllers
         }
 
         static VstsCredentials _StoreVSTSDataObject;
+
         VstsCredentials StoreVSTSData(VstsCredentials cred)
         {
             if(cred != null)
@@ -165,27 +214,16 @@ namespace BugBot.Controllers
             return _StoreVSTSDataObject;
         }
 
-        void MessageIamReady(Activity activity)
+        void MessageIamReady(IBotMessage message)
         {
-            var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
-            var reply = activity.CreateReply($"I am ready");
-            client.Conversations.ReplyToActivity(reply);
+            message.Reply($"I am ready");
         }
 
-        void MessageCreateBug(Activity activity)
+        void MessageCreateBug(IBotMessage message)
         {
-            var client = new ConnectorClient(new Uri(activity.ServiceUrl), this._botCredentials);
-            int messageId;
+            int messageId = _dataActivity.Add(message.From, message.Text);
 
-            string user = activity.From.Id;
-            string message = activity.Text;
-            string name = activity.From.Name;
-
-            messageId = _dataActivity.Add($"[{name}] {user}", message);
-
-            var reply = activity.CreateReply($"Created bug #{messageId} in the database");
-
-            client.Conversations.ReplyToActivity(reply);
+            message.Reply($"Created bug #{messageId} in the database");
         }
     }
 }

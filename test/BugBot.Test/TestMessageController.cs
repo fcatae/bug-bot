@@ -20,7 +20,7 @@ namespace BugBot.Test
                 MicrosoftAppPassword = "appsecret"
             };
 
-            this._controller = new MessagesController(Options.Create(credentials), null, null);
+            this._controller = new MessagesController(Options.Create(credentials), new BotService("", ""), null, null);
         }
 
         public void Post(TestActivity testActivity)

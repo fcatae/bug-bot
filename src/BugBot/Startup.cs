@@ -40,8 +40,13 @@ namespace BugBot
 
             services.Configure<BotFrameworkCredentials>(Configuration.GetSection("BotFramework"));
 
+
+            string botUser = Configuration["BotFramework:MicrosoftAppId"];
+            string botPassword = Configuration["BotFramework:MicrosoftAppPassword"];
+
             string configConnectionString = Configuration["Data:ConnectionString"];
 
+            services.AddSingleton<IBotService>(new BotService(botUser, botPassword));
             services.AddSingleton<IDataActivity>(new DataActivity(configConnectionString));
             services.AddSingleton<IEventActivity>(new EventActivity(configConnectionString));
         
