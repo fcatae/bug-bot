@@ -51,7 +51,7 @@ namespace BugBot
 
         public IEnumerable<DataModel> List()
         {
-            List<DataModel> data = new List<BugBot.DataModel>();
+            List<DataModel> data = new List<DataModel>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
