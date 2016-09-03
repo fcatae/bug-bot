@@ -15,14 +15,9 @@ namespace BugBot.DatabaseTest
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
-                .AddEnvironmentVariables();
-                
-
-            if(Environment.GetEnvironmentVariable("ASPNETCORE_Environment") == "Development")
-            {
-                builder.AddUserSecrets();
-            }
-
+                .AddEnvironmentVariables()
+                .AddUserSecrets("aspnet-BugBot-20160811104740");
+            
             var config = builder.Build();
 
             CONNECTION_STRING = config["Data:ConnectionString"];
