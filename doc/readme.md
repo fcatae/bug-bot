@@ -34,18 +34,31 @@ Promote the feedback to a known bug
 
 # Events
 
-Configure an internal event
+Receive webhook calls (HTTP POST), transform it into a message, and post it to 
+the current communication channel.
 
-    /event listen vsts:bug_fixed 'bug fixed (initiated by {user})'
+## Examples 
+
+Configure an event
+
+    /event add bug-fixed --channel 'bug fixed (initiated by {user})'
 
 Configure a webhook endpoint for receiving events
 
-    /event listen arda-bug-report 'message template from {user}'
+    /event add arda-bug-report --channel 'message template from {user}'
 
-Mute the conversation
+Update the current message (no change in URL)
 
-    /event listen --mute arda-bug-report
+    /event update arda-bug-report --channel 'ok'
 
+List the conversations
+
+    /event list
+
+Drop the conversation
+
+    /event drop arda-bug-report
+    
     
 # Debug
 
